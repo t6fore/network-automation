@@ -1,6 +1,6 @@
 auto lo
 iface lo inet loopback
-    {% for interface in interfaces %}
+    {% for interface in interfaces -%}
     {% if interface.name == "lo" -%}
     address {{ interface.ipv4 }}
     {% endif -%}
@@ -17,3 +17,26 @@ iface {{ interface.name }}
     address {{ interface.ipv6_ula }}
 {% endif -%}
 {% endfor -%}
+{% if bridge is defined %}
+auto bridge
+iface bridge
+    bridge-ports {{ bridge.ports|join(' ') }}
+    bridge-pvid 1
+    bridge-vids {{ bridge.vids|join(' ') }}
+    bridge-vlan-aware {{ bridge.vlan_aware }}
+{% for vlan in bridge.vids %}
+iface vlan{{ vlan }}
+    vlan-id {{ vlan }}
+    vlan-raw-device bridge
+{% endfor %}
+{% for vxlan_id, value in vxlans.items() %}
+auto vni{{ vxlan_id }}
+iface vni{{ vxlan_id }}
+    alias {{ value.alias }}
+    vxlan-id {{ vxlan_id }}
+    vxlan-local-tunnelip {{ value.vxlan_local_tunnelip }} 
+    bridge-access {{ value.bridge_access }}
+    bridge-learning {{ value.bridge_learning }}
+    bridge-arp-nd-suppress {{ value.bridge_arp_nd_suppress }}
+{% endfor %}
+{% endif %}

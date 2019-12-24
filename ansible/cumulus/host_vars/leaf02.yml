@@ -20,9 +20,11 @@ interfaces:
     ipv4: 10.20.12.12/24
     ipv6_ula: fc00::10:20:12:12/64
     ipv6_lla: fe80::12
-  - name: swp3
-    auto: true
-    ipv4: 10.0.12.1/24
+
+bridge:
+   ports: [ vni100, swp3 ]
+   vids: [ 200 ]
+   vlan_aware: yes
 
 routing:
   bgp:
@@ -54,4 +56,13 @@ routing:
         evpn: true
         update_source: 10.0.0.12
     networks: 
-      - 10.0.0.12/32
+      - 10.0.0.12/32 
+
+vxlans:
+   100:
+     alias: server02
+     bridge_access: 200
+     bridge_learning: 'off'
+     bridge_arp_nd_suppress: 'on'
+     route_targets: '65011:100'
+     vxlan_local_tunnelip: 10.0.0.12

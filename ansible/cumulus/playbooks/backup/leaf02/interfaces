@@ -1,7 +1,7 @@
 auto lo
 iface lo inet loopback
-        address 10.0.0.12/32
-                    auto lo
+    address 10.0.0.12/32
+    auto lo
 iface lo
     address 10.0.0.12/32
     address fc00::10:0:0:12/128
@@ -16,6 +16,20 @@ auto swp2
 iface swp2
     address 10.20.12.12/24
     address fc00::10:20:12:12/64
-auto swp3
-iface swp3
-    address 10.0.12.1/24
+auto bridge
+iface bridge
+    bridge-ports vni100
+    bridge-pvid 1
+    bridge-vids 200
+    bridge-vlan-aware True
+iface vlan200
+    vlan-id 200
+    vlan-raw-device bridge
+auto vni100
+iface vni100
+    alias server02
+    vxlan-id 100
+    vxlan-local-tunnelip 10.0.0.12 
+    bridge-access 200
+    bridge-learning off
+    bridge-arp-nd-suppress on

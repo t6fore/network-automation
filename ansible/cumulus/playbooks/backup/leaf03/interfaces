@@ -1,7 +1,7 @@
 auto lo
 iface lo inet loopback
-        address 10.0.0.13/32
-                    auto lo
+    address 10.0.0.13/32
+    auto lo
 iface lo
     address 10.0.0.13/32
     address fc00::10:0:0:13/128
