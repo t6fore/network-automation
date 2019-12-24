@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  become: true
+
+  tasks:
+  
+  - name: Backup interface Configuration
+    fetch:
+      src: /etc/network/interfaces 
+      flat: yes
+      dest: backup/{{inventory_hostname}}/interfaces
+
+  - name: Backup FRRouting daemon configuration
+    fetch:
+      src: /etc/frr/daemons 
+      flat: yes
+      dest: backup/{{inventory_hostname}}/daemons
+  
+  - name: Backup FRRouting configuration
+    fetch:
+      src: /etc/frr/frr.conf
+      flat: yes
+      dest: backup/{{inventory_hostname}}/frr.conf

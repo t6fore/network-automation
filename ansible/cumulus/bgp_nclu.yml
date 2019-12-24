@@ -1,0 +1,61 @@
+---
+
+- name: BGP // CREATING PROCESS
+  nclu:
+    commands:
+      - add bgp autonomous-system {{ node_var.routing.bgp.asn }}
+      - add bgp router-id {{ node_var.routing.bgp.router_id }}
+    atomic: true
+
+- name: BGP // APLYING AS_PATH RELAX
+  nclu:
+    template: |
+      {% if node_var.routing.bgp.as_path_relax %}
+      add bgp bestpath as-path multipath-relax
+      {% endif %}
+    atomic: true
+
+- name: BGP // CONFIGURING NEIGHBOR
+  nclu:
+    template: |
+      {% for nei in node_var.routing.bgp.neighbors %}
+      add bgp neighbor {{ nei.peer_ip }} remote-as {{ nei.peer_asn }}
+      add bgp neighbor {{ nei.peer_ip }} password {{ nei.password }}
+      {% if nei.ebgp_multihop != 'not_defined' %}
+      add bgp neighbor {{ nei.peer_ip }} ebgp-multihop {{ nei.ebgp_multihop }}
+      {% endif %}
+      {% if nei.update_source != 'not_defined' %}
+      add bgp neighbor {{ nei.peer_ip }} update-source {{ nei.update_source }}
+      {% endif %}
+      {% if nei.ipv4 %}
+      add bgp ipv4 unicast neighbor {{ nei.peer_ip }} activate
+      {% else %}
+      del bgp ipv4 unicast neighbor {{ nei.peer_ip }} activate
+      {% endif %}
+      {% if nei.evpn %}
+      add bgp l2vpn evpn neighbor {{ nei.peer_ip }} activate
+      {% else %}
+      del bgp l2vpn evpn neighbor {{ nei.peer_ip }} activate
+      {% endif %}
+      {% endfor %}
+    atomic: true
+
+- name: BGP // ADVERTISING IPV4 LOOPBACK
+  nclu:
+    commands:
+      - add bgp ipv4 unicast network {{ node_var | json_query(loopback_address) | join }}
+    atomic: true
+  vars:
+    loopback_address: "interfaces[?name=='lo'].ipv4"
+
+- name: BGP // PREPARING L2VPN EVPN AFI/SAFI
+  nclu:
+    commands:
+      - add bgp l2vpn evpn advertise-all-vni
+      - add bgp l2vpn evpn advertise-default-gw
+    atomic: true
+
+- name: reload FRR
+  service:
+    name: frr
+    state: restarted

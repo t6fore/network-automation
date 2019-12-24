@@ -1,0 +1,19 @@
+auto lo
+iface lo inet loopback
+    {% for interface in interfaces %}
+    {% if interface.name == "lo" -%}
+    address {{ interface.ipv4 }}
+    {% endif -%}
+    {% endfor -%}
+{% for interface in interfaces -%}
+{% if interface.auto == true -%}
+auto {{ interface.name }}
+{% endif -%}
+iface {{ interface.name }}
+{% if interface.ipv4 is defined %}
+    address {{ interface.ipv4 }}
+{% endif -%}
+{% if interface.ipv6_ula is defined %}
+    address {{ interface.ipv6_ula }}
+{% endif -%}
+{% endfor -%}

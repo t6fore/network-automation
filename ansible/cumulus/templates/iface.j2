@@ -1,0 +1,16 @@
+{% for int in node_var.interfaces %}
+auto {% if int.name == 'lo' %}lo{% else %}{{ int.name + int.id|string() }} {% endif %}
+
+iface {% if int.name == 'lo' %}lo inet loopback{% else %}{{ int.name + int.id|string() }} {% endif %}
+
+{% if int.ipv4 is defined %}
+    address {{ int.ipv4 }}
+{% endif %}{% if int.ipv6_ula is defined %}
+    address {{ int.ipv6_ula }}
+{% endif %}
+{% if int.vlan is defined and int.name != 'lo' %}
+    vlan-id {{ int.vlan }}
+    vlan-raw-device bridge
+{% endif %}
+
+{% endfor %}

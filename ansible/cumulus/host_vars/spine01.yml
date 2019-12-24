@@ -1,0 +1,58 @@
+---
+
+hostname: spine01
+interfaces:
+  - name: lo
+    auto: true
+    ipv4: 10.0.0.10/32
+    ipv6_ula: fc00::10:0:0:10/128
+    ipv6_lla: fe80::10
+  - name: eth0
+    auto: true
+    ipv4: 192.168.100.10/24
+  - name: swp1
+    auto: true
+    ipv4: 10.10.11.10/24
+    ipv6_ula: fc00::10:10:11:10/64
+    ipv6_lla: fe80::10
+  - name: swp2
+    auto: true
+    ipv4: 10.10.12.10/24
+    ipv6_ula: fc00::10:10:12:10/64
+    ipv6_lla: fe80::10
+  - name: swp3
+    auto: true
+    ipv4: 10.10.13.10/24
+    ipv6_ula: fc00::10:10:13:10/64
+    ipv6_lla: fe80::10
+  - name: swp4
+    auto: true
+    ipv4: 10.10.14.10/24
+    ipv6_ula: fc00::10:10:14:10/64
+    ipv6_lla: fe80::10
+
+routing:
+  bgp:
+    asn: 65001
+    router_id: 10.0.0.10
+    as_path_relax: true
+    neighbors:
+      - peer_ip: 10.10.11.11
+        peer_asn: 65011
+        ipv4: true
+        evpn: false
+      - peer_ip: 10.10.12.12
+        peer_asn: 65012
+        ipv4: true
+        evpn: false
+      - peer_ip: 10.10.13.13
+        peer_asn: 65013
+        ipv4: true
+        evpn: false
+      - peer_ip: 10.10.14.14
+        peer_asn: 65014
+        ipv4: true
+        evpn: false
+    networks:
+      - 10.0.0.10/32
+

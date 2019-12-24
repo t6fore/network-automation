@@ -1,0 +1,27 @@
+---
+
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+
+  - name: Enable BGP
+    lineinfile:
+      path: "/etc/frr/daemons"
+      regexp: '^bgpd='
+      line: 'bgpd=yes'
+    notify: Restart frr
+
+  - name: Update frr configuration
+    blockinfile:
+      block: "{{ lookup('template', '../templates/bgp.j2') }}"
+      dest: "/etc/frr/frr.conf"
+    notify: Restart frr
+
+  handlers:
+
+  - name: Restart frr
+    systemd:
+      name: frr.service
+      state: restarted

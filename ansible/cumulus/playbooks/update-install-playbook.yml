@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+  become: true
+
+  tasks:
+
+  - name: Update cumulus
+    apt:
+      upgrade: dist
+      update_cache: yes
+  

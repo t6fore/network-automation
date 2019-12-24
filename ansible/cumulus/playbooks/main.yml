@@ -1,0 +1,7 @@
+---
+
+  - import_playbook: backup-playbook.yml
+  - import_playbook: update-install-playbook.yml
+  - import_playbook: interface-playbook.yml
+  - import_playbook: frrouting-playbook.yml
+  - import_playbook: bgp-playbook.yml

@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+
+  - name: Enable Zebra
+    lineinfile:
+      path: /etc/frr/daemons
+      regexp: '^zebra='
+      line: 'zebra=yes'
+
+  - name: Make sure frr is running
+    systemd:
+      name: frr.service
+      state: started
+      enabled: yes
+

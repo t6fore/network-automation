@@ -1,0 +1,22 @@
+{% set bgp_config = node_var.routing.bgp %}
+{% set bgp_asn = bgp_config.asn %}
+{% set router_id = bgp_config.router_id %}
+
+router bgp {{ bgp_asn }}
+ bgp router-id {{ router_id }}
+ {%- if bgp_config.as_path_relax -%}
+ bgp bestpath as-path multipath-relax
+ {%- endif -%}
+ {%- for neighbor in bgp_config.neighbors -%}
+ neighbor {{ neighbor.peer_ip }} remote-as {{ neighbor.peer_asn }}
+ neighbor {{ neighbor.peer_ip }} password {{ neighbor.password }}
+ {%- if neighbor.ipv4 -%}
+ address-family ipv4 unicast
+  neighbor {{ neighbor.peer_ip }} activate
+ {%- endif -%} 
+ {%- if neighbor.evpn -%}
+  bgp l2vpn evpn neighbor {{ neighbor.peer_ip }} activate
+ {%- endif -%} 
+ {%- endfor -%}
+
+

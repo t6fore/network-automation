@@ -1,0 +1,9 @@
+[cumulus-spines]
+spine01 ansible_host=192.168.100.10
+spine02 ansible_host=192.168.100.20
+
+[cumulus-leafs]
+leaf01 ansible_host=192.168.100.11
+leaf02 ansible_host=192.168.100.12
+leaf03 ansible_host=192.168.100.13
+leaf04 ansible_howt=192.168.100.14

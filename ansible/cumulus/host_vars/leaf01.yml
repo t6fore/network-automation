@@ -1,0 +1,39 @@
+---
+
+hostname: leaf01
+interfaces:
+  - name: lo
+    auto: true
+    ipv4: 10.0.0.11/32
+    ipv6_ula: fc00::10:0:0:11/128
+    ipv6_lla: fe80::11
+  - name: eth0
+    auto: true
+    ipv4: 192.168.100.11/24
+  - name: swp1
+    auto: true
+    ipv4: 10.10.11.11/24
+    ipv6_ula: fc00::10:10:11:11/64
+    ipv6_lla: fe80::11
+  - name: swp2
+    auto: true
+    ipv4: 10.20.11.11/24
+    ipv6_ula: fc00::10:20:11:11/64
+    ipv6_lla: fe80::11
+
+routing:
+  bgp:
+    asn: 65011
+    router_id: 10.0.0.11
+    as_path_relax: true
+    neighbors:
+      - peer_ip: 10.10.11.10
+        peer_asn: 65001
+        ipv4: true
+        evpn: false
+      - peer_ip: 10.20.11.20
+        peer_asn: 65001
+        ipv4: true
+        evpn: false
+    networks: 
+      - 10.0.0.11/32

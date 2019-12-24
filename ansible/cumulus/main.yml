@@ -1,0 +1,66 @@
+---
+
+- name: CONFIGURING SPINES
+  hosts: cumulus-spines
+  gather_facts: false
+
+  tasks:
+
+    - name: IMPORTING HOST SPECIFIC DATA
+      include_vars:
+        file: "{{ inventory_hostname }}.yml"
+
+    - name: CONFIGURING INTERFACES
+      blockinfile:
+        block: "{{ lookup ('template', 'iface.j2') }}"
+        path: /etc/network/interfaces
+      become: true
+
+    - name: RELOADING INTERFACE CONFIGURATION
+      shell: ifreload -a
+      become: true
+
+
+- name: CONFIGURING LEAFS
+  hosts: cumulus-leafs
+  gather_facts: false
+
+  tasks:
+
+    - name: IMPORTING HOST SPECIFIC DATA
+      include_vars:
+        file: "{{ inventory_hostname }}.yml"
+
+    - name: CONFIGURING INTERFACES
+      blockinfile:
+        block: "{{ lookup ('template', 'iface.j2') }}"
+        path: /etc/network/interfaces
+      become: true
+
+    - name: RELOADING INTERFACE CONFIGURATION
+      shell: ifreload -a
+      become: true
+
+
+- name: CONFIGURING BGP
+  hosts: all
+  gather_facts: false
+  become: yes
+
+  tasks:
+
+    - name: READING VARIABLES
+      include_vars:
+        file: "{{ inventory_hostname }}.yml"
+
+    - name: GENERATING BGP CONFIGURATION
+      blockinfile:
+        block: "{{ lookup ('template', 'bgpd.j2') }}"
+        path: /etc/frr/bgpd.conf
+
+    - name: RELOADING FRR
+      service:
+        name: frr
+        state: restarted
+      
+

@@ -1,0 +1,18 @@
+---
+
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+
+  - name: Load Interface configuration
+    template:
+      src: "../templates/interfaces.j2"
+      dest: "/etc/network/interfaces"
+    notify: reload networking
+
+  handlers:
+    - name: reload networking
+      command: /sbin/ifreload -a
+

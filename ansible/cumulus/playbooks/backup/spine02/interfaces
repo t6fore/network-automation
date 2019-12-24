@@ -1,0 +1,26 @@
+auto lo
+iface lo inet loopback
+        address 10.0.0.20/32
+                        auto lo
+iface lo
+    address 10.0.0.20/32
+    address fc00::10:0:0:20/128
+auto eth0
+iface eth0
+    address 192.168.100.20/24
+auto swp1
+iface swp1
+    address 10.20.11.20/24
+    address fc00::10:20:11:20/64
+auto swp2
+iface swp2
+    address 10.20.12.10/24
+    address fc00::10:20:12:20/64
+auto swp3
+iface swp3
+    address 10.20.13.20/24
+    address fc00::10:20:13:20/64
+auto swp4
+iface swp4
+    address 10.20.14.20/24
+    address fc00::10:20:14:20/64
