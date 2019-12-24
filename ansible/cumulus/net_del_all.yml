@@ -1,0 +1,12 @@
+---
+
+- name: REMOVING ALL CONFIGURATION PLAYBOOK
+  hosts: all
+
+  tasks:
+
+    - name: REMOVING ALL CONFIGURATION
+      nclu:
+        commands:
+          - del all
+        atomic: true
