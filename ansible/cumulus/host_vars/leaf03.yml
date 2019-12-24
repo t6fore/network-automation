@@ -20,6 +20,10 @@ interfaces:
     ipv4: 10.20.13.13/24
     ipv6_ula: fc00::10:20:13:13/64
     ipv6_lla: fe80::13
+  - name: swp3
+    auto: true
+    rack_facing: true
+    ipv4: 10.0.13.1/24
 
 routing:
   bgp:
@@ -35,5 +39,20 @@ routing:
         peer_asn: 65001
         ipv4: true
         evpn: false
+      - peer_ip: 10.0.0.11
+        peer_asn: 65011
+        ipv4: false
+        evpn: true
+        update_source: 10.0.0.12
+      - peer_ip: 10.0.0.12
+        peer_asn: 65012
+        ipv4: false
+        evpn: true
+        update_source: 10.0.0.13
+      - peer_ip: 10.0.0.14
+        peer_asn: 65014
+        ipv4: false
+        evpn: true
+        update_source: 10.0.0.13
     networks: 
       - 10.0.0.13/32

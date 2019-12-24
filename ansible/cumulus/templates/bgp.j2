@@ -1,8 +1,30 @@
 router bgp {{ routing.bgp.asn }}
   bgp router-id {{ routing.bgp.router_id }}
+  bgp bestpath as-path multipath-relax
+  no bgp default ipv4-unicast
   {% for neighbor in routing.bgp.neighbors -%}
   neighbor {{ neighbor.peer_ip }} remote-as {{ neighbor.peer_asn }}
+  {% if neighbor.update_source is defined -%}
+  neighbor {{ neighbor.peer_ip }} update-source {{ neighbor.update_source }}
+  {% endif -%}
   {% endfor -%}
-  {% for network in routing.bgp.networks -%}
+  address-family l2vpn evpn  
+  {% for neighbor in routing.bgp.neighbors -%}
+  {% if neighbor.evpn %}
+  neighbor {{ neighbor.peer_ip }} activate
+  {% endif -%}
+  {% endfor %}
+  advertise-all-vni 
+  exit-address-family
+  address-family ipv4 unicast
+  {% for neighbor in routing.bgp.neighbors -%}
+  {% if neighbor.ipv4 %}
+  neighbor {{ neighbor.peer_ip }} activate
+  {% endif -%}
+  {% endfor -%}
+  {% if routing.bgp.networks is defined -%} 
+  {% for network in routing.bgp.networks %}
   network {{ network }}
   {% endfor -%}
+  {% endif -%}
+  exit-address-family
